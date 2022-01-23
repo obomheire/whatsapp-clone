@@ -1,5 +1,8 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { SearchContainer, SearchInput } from "./ContactListComponents";
+import { Picker } from 'emoji-picker-react'
+import { messagesList } from '../mockData'
 
 const Container = styled.div`
     display: flex;
@@ -54,27 +57,33 @@ const Message = styled.div`
   font-size: 14px;
   border-radius: 4px;
 `;
-const ConversationComponents = () => {
+const ConversationComponents = (props) => {
+    const { selectedChat } = props
+    // const [text, setText] = useState('')
+    
+    // const onEmojiClick = (event, emoji) =>{}
   return (
     <Container>
       <ProfileHeader>
-        <ProfileImage src='/profile/theindiandev.jpeg' />
+        <ProfileImage src={selectedChat.profilePic}/>
+        {selectedChat.name}
       </ProfileHeader>
       <MessageContainer>
-          <MessageDiv isYours={true}>
-              <Message isYours={true}>Hey man! I am using whatsapp clone</Message>
+        {messagesList.map((messageData) => (
+          <MessageDiv key={messageData.id} isYours={messageData.senderID === 0}>
+            <Message key={messageData.id} isYours={messageData.senderID === 0}>
+              {[messageData.text]}
+            </Message>
           </MessageDiv>
-          <MessageDiv>
-              <Message>Hey man! I am using whatsapp clone</Message>
-          </MessageDiv>
-          <MessageDiv>
-              <Message>Hey man! I am using whatsapp clone</Message>
-          </MessageDiv>
+        ))}
       </MessageContainer>
       <ChatBox>
           <SearchContainer>
+              {/* <Picker pickerStyle={{ position: "absolute", bottom: "60px" }}
+              onEmojiClick={onEmojiClick}/> */}
               <EmojiImage src={'/data.svg'} />
-              <SearchInput placeholder="Type a message here" />
+              <SearchInput 
+              placeholder="Type a message here" />
           </SearchContainer>
       </ChatBox>
     </Container>

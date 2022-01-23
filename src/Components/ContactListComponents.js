@@ -49,7 +49,10 @@ const ContactItem = styled.div`
   border-bottom: 1px solid #f2f2f2;
   background: white;
   cursor: pointer;
-  padding: 15px 12px
+  padding: 15px 12px;
+  :hover {
+    background: #ebebeb;
+  }
 `;
 const ProfileIcon = styled(ProfileImage)`
   width: 38px;
@@ -80,9 +83,9 @@ const MessageTime = styled.span`
 `;
 
 const ContactComponent = (props) => {
-    const {userData} = props;
+    const {userData, setChat} = props;
     return (
-        <ContactItem>
+        <ContactItem onClick={() => setChat(userData)}>
             <ProfileIcon src={userData.profilePic}/>
             <ContactInfo>
                 <ContactName>{userData?.name}</ContactName>
@@ -94,7 +97,7 @@ const ContactComponent = (props) => {
 };
 
 
-const ContactListComponents = () => {
+const ContactListComponents = (props) => {
   return <Container>
       <ProfileInfoDiv>
       <ProfileImage src="/profile/theindiandev.jpeg" />
@@ -106,7 +109,7 @@ const ContactListComponents = () => {
         </SearchContainer> 
       </SearchBox>
       {contactList.map((userData) => (
-        <ContactComponent userData={userData} />
+        <ContactComponent key={userData.id} userData={userData} setChat={props.setChat}/>
         ))}
       </Container>
 };
