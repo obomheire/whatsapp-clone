@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Picker from 'emoji-picker-react'
 import { SearchContainer, SearchInput } from "./ContactListComponents";
-import { Picker } from 'emoji-picker-react'
 import { messagesList } from '../mockData'
 
 const Container = styled.div`
@@ -59,9 +59,28 @@ const Message = styled.div`
 `;
 const ConversationComponents = (props) => {
     const { selectedChat } = props
-    // const [text, setText] = useState('')
+    const [text, setText] = useState('')
+    const [pickerVisible, togglePicker] = useState(false);
+    const [messageList, setMessageList] = useState(messagesList);
     
-    // const onEmojiClick = (event, emoji) =>{}
+    const onEmojiClick = (event, emojiObj) =>{
+        setText(text + emojiObj.emoji)
+        togglePicker(false)
+    }
+    const onEnterPress = (event) =>{
+        if(event.key === 'Enter'){
+            const messages = [...messageList]
+            messages.push({
+                id: 0,
+                messageType: "TEXT",
+                text,
+                senderID: 0,
+                addedOn: "12:00 PM",
+              })
+              setMessageList(messages) 
+              setText('')
+        }
+    }
   return (
     <Container>
       <ProfileHeader>
@@ -69,21 +88,19 @@ const ConversationComponents = (props) => {
         {selectedChat.name}
       </ProfileHeader>
       <MessageContainer>
-        {messagesList.map((messageData) => (
-          <MessageDiv key={messageData.id} isYours={messageData.senderID === 0}>
-            <Message key={messageData.id} isYours={messageData.senderID === 0}>
-              {[messageData.text]}
+        {messageList.map((messageData) => (
+          <MessageDiv isYours={messageData.senderID === 0}>
+            <Message isYours={messageData.senderID === 0}>
+              {messageData.text}
             </Message>
           </MessageDiv>
         ))}
       </MessageContainer>
       <ChatBox>
           <SearchContainer>
-              {/* <Picker pickerStyle={{ position: "absolute", bottom: "60px" }}
-              onEmojiClick={onEmojiClick}/> */}
-              <EmojiImage src={'/data.svg'} />
-              <SearchInput 
-              placeholder="Type a message here" />
+              {pickerVisible && (<Picker pickerStyle={{position: "absolute", bottom: "60px"}} onEmojiClick={onEmojiClick} />)}
+              <EmojiImage src={'/data.svg'} onClick={() => togglePicker(!pickerVisible)}/>
+              <SearchInput placeholder="Type a message here" value={text} onKeyDown={onEnterPress} onChange={(e) => setText(e.target.value)}/>
           </SearchContainer>
       </ChatBox>
     </Container>
